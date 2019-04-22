@@ -3,33 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <title>Friend Finder</title>
-    <script
-      src="https://code.jquery.com/jquery-3.4.0.min.js"
-      integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-      crossorigin="anonymous"
-    />
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous" ></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"  integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"/>
+
   </head>
   <body>
     <div class="container">
@@ -50,8 +29,8 @@
       </div>
 
       <footer class="footer">
-        <a href="">API Friends List</a> |
-        <a href="">GitHub Repo</a>
+        <a href="/api/friends">API Friends List</a> |
+        <a href="https://github.com/katiekatieb/friendFinder">GitHub Repo</a>
       </footer>
     </div>
 
@@ -60,7 +39,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Your Match</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -123,31 +102,17 @@
 
     $.post("/api/friends", results, function(data) {
 
-      // if (data) {
-      //   alert("worked");
-      // } else {
-      //   alert("didn't work");
-      // }
-
       $("#name").val("");
       $("#img").val("");
 
-      // $('#myModal').modal('show'); 
-
       findMatch();
-
     })
 
 
 
   });
 
-
-  findMatch();
   
-
-
-
   function findMatch() {
     $.ajax({ url: "/api/friends", method: "GET" })
     .then(function(data) {
@@ -172,17 +137,28 @@
 
         if(diff < friendScore){
           friendScore = diff;
-          bff = data[i]
+          bff = data[i];
         }
 
 
         $('#myModal').modal('show');
-        $('#modal-body').append("<p>" + bff.name + "</p>");
-        $('#modal-body').append("<img src='" + bff.photo + "'>");
+        $('#modal-body').html("<img class='img-thumbnail' onerror='imgError(this);' src='" + bff.name + "'>" + "<p class='h2' >" + bff.name + "</p>");
 
         console.log(bff);
       }
 
-    });
+    }); 
+
   }
+
+  $("#close").on("click", function(event) {
+    document.location.href='/';
+  })
+
+  function imgError(image) {
+    image.onerror = "/app/public/profile.png";
+    image.src =  "http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png";
+    return true;
+  }
+
 </script>
